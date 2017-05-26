@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "lib": ["es6", "dom"],
+    "declaration": true,
+    "outDir": "lib",
+    "rootDir": "./",
+    "strict": true,
+    "typeRoots": ["node_modules/@types"]
+  },
+  "exclude": [
+      "node_modules",
+      "lib",
+      "coverage",
+      "test",
+      "./karma.conf.ts"
+  ]
+}
