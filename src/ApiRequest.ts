@@ -41,8 +41,8 @@ export class ApiRequest {
      */
     getRequestUrl() {
         let baseUrl = Settings.HH_API_BASE_URL;
-        let queryString = this.params.filter(p=>p.name)
-                                    .map(p => `${p.name}=${encodeURIComponent(p.value || '')}`)
+        let queryString = this.params.filter(p => p.name)
+                                    .map(p => p.query)
                                     .join('&');
         return `${baseUrl}/${this.resource}?${queryString}`;
     }
