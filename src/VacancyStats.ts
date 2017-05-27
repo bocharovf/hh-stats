@@ -58,7 +58,7 @@ export class VacancyStats {
         let minSalary = Math.min(...validStats.map(s => s.minSalary));
         let maxSalary = Math.max(...validStats.map(s => s.maxSalary));
         let avgSalary = validStats.map(s => s.avgSalary).reduce((a, b) => a + b, 0) / validStats.length;
-        let amount = validStats.map(s => s.amount).reduce((a, b) => a + b, 0);
+        let amount = Math.max(...validStats.map(s => s.amount));
         let used = validStats.map(s => s.used).reduce((a, b) => a + b, 0);
         
         return new VacancyStats(minSalary, maxSalary, avgSalary, amount, used);
