@@ -124,4 +124,50 @@ describe ("class VacancyStats",() => {
         });         
     });
 
+    describe('The "merge" method', () => {
+        let stat1: VacancyStats;
+        let stat2: VacancyStats;
+        let emptyStat: VacancyStats;
+
+        beforeEach(() => {
+            stat1 = new VacancyStats(20,100,60,453,70);
+            stat2 = new VacancyStats(10,130,70,503,30);
+            emptyStat = new VacancyStats(0,0,0,0,0);
+        });
+
+        it('calc used as summary of used fields', () => {
+            const merged = VacancyStats.merge(stat1, stat2);
+            expect(merged.used).toEqual(100);
+        });
+
+        it('calc amount as max value among amounts', () => {
+            const merged = VacancyStats.merge(stat1, stat2);
+            expect(merged.amount).toEqual(503);
+        });
+
+        it('calc minSalary as min value among min salaries', () => {
+            const merged = VacancyStats.merge(stat1, stat2);
+            expect(merged.minSalary).toEqual(10);
+        });        
+
+        it('calc maxSalary as max value among max salaries', () => {
+            const merged = VacancyStats.merge(stat1, stat2);
+            expect(merged.maxSalary).toEqual(130);
+        });
+
+        it('calc avgSalary as average of average salaries', () => {
+            const merged = VacancyStats.merge(stat1, stat2);
+            expect(merged.avgSalary).toEqual(65);
+        });
+
+        it('ignore "empty" arguments with (where used <= 0)', () => {
+            const merged = VacancyStats.merge(stat1, emptyStat, stat2);
+            expect(merged.used).toEqual(100);
+            expect(merged.amount).toEqual(503);
+            expect(merged.minSalary).toEqual(10);
+            expect(merged.maxSalary).toEqual(130);
+            expect(merged.avgSalary).toEqual(65);
+        });            
+
+    });
 });
