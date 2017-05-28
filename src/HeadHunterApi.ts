@@ -55,7 +55,7 @@ export class HeadHunterApi {
      * @param perPage amount of results per page
      * @returns new array of parameters with paging
      */
-    addPaging(params: RequestParam[], page: number, perPage: number): RequestParam[] {
+    private addPaging(params: RequestParam[], page: number, perPage: number): RequestParam[] {
         return [
             ...params,
             new RequestParam('page', page.toString()),
@@ -67,7 +67,7 @@ export class HeadHunterApi {
      * Prepare search expression and filter non-empty and unique keywords
      * @param keywords original keywords
      */
-    prepareKeywords(keywords: string[]): string {
+    private prepareKeywords(keywords: string[]): string {
         return keywords.filter(w => w)
                         // distinct
                         .filter((value, index, self) => self.indexOf(value) === index)
