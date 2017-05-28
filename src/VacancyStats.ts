@@ -2,16 +2,17 @@ import { VacancyResponse, VacancyItemSalary } from  './response/VacancyResponse'
 import { CurrencyConverter } from './CurrencyConverter';
 
 /**
- * 
+ * Aggregated vacancy statistics
  */
 export class VacancyStats {
 
     /**
      * 
-     * @param minSalary 
-     * @param maxSalary 
-     * @param avgSalary 
-     * @param amount 
+     * @param minSalary Min salary
+     * @param maxSalary Max salary
+     * @param avgSalary Average salary
+     * @param amount Amount of found vacancies
+     * @param used Amount of vacancies used to calculate min, max and avg salary 
      */
     constructor(
         public minSalary: number, 
@@ -23,8 +24,9 @@ export class VacancyStats {
     }
 
     /**
-     * 
-     * @param json 
+     * Parse JSON response from HH service and return salary statistics
+     * @param json JSON response from HH service
+     * @param converter CurrencyConverter implementation to convert currency
      */
     static parse(json: string, converter: CurrencyConverter): VacancyStats {
         let resp: VacancyResponse = JSON.parse(json);
@@ -49,8 +51,8 @@ export class VacancyStats {
     }
 
     /**
-     * 
-     * @param stats 
+     * Merge multiple VacancyStats instance to single instance
+     * @param stats VacancyStats to merge
      */
     static merge(...stats: VacancyStats[]) {
         let validStats = stats.filter(s => s.used > 0);

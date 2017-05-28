@@ -2,23 +2,26 @@ import {RequestParam} from './RequestParam';
 import * as Settings from './settings';
 
 /**
- * 
+ * Represents single request to HH Api
  */
 export class ApiRequest {
 
+    /**
+     * Request timeout
+     */
     timeout = Settings.DEFAULT_REQUEST_TIMEOUT;
 
     /**
      * 
-     * @param resource 
-     * @param params 
+     * @param resource resource name to request
+     * @param params query string parameters
      */
     constructor(public readonly resource: string, public params: RequestParam[] = []) {
 
     }
 
     /**
-     * 
+     * Perform request
      */
     run(): Promise<string> {
         let url = this.getRequestUrl();
@@ -37,7 +40,7 @@ export class ApiRequest {
     }
 
     /**
-     * 
+     * Build full request URL
      */
     getRequestUrl() {
         let baseUrl = Settings.HH_API_BASE_URL;

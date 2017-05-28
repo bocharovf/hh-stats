@@ -5,20 +5,24 @@ import { CurrencyConverter } from './CurrencyConverter';
 import * as Settings from './settings';
 
 /**
- * 
+ * Head Hunter API client
  */
 export class HeadHunterApi {
 
+    /**
+     * 
+     * @param currencyConverter currency converter to use
+     */
     constructor(public currencyConverter: CurrencyConverter) {
 
     }
 
     /**
-     * 
-     * @param keywords 
-     * @param area 
-     * @param experience 
-     * @param params 
+     * Get vacancy statistics for specified area and experience
+     * @param keywords array of keywords to search
+     * @param area area name
+     * @param experience experience category name
+     * @param params additional request parameters
      */
     getVacancy(keywords: string[], area?: string, experience?: string): Promise<VacancyStats> {
         let textParam = new RequestParam('text', this.prepareKeywords(keywords));
@@ -28,8 +32,8 @@ export class HeadHunterApi {
     }
 
     /**
-     * 
-     * @param params 
+     * Get vacancy statistics for custom filters
+     * @param params array of resuest parameters
      */
     getCustomVacancy(...params: RequestParam[]): Promise<VacancyStats> {
         let resource = 'vacancy';
@@ -45,10 +49,11 @@ export class HeadHunterApi {
     }
 
     /**
-     * 
-     * @param params 
-     * @param page 
-     * @param perPage 
+     * Add paging parameters to request
+     * @param params original parameters
+     * @param page page number to request
+     * @param perPage amount of results per page
+     * @returns new array of parameters with paging
      */
     addPaging(params: RequestParam[], page: number, perPage: number): RequestParam[] {
         return [
@@ -59,8 +64,8 @@ export class HeadHunterApi {
     }    
 
     /**
-     * 
-     * @param keywords 
+     * Prepare search expression and filter non-empty and unique keywords
+     * @param keywords original keywords
      */
     prepareKeywords(keywords: string[]): string {
         return keywords.filter(w => w)
