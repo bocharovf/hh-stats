@@ -6,11 +6,15 @@ import { CurrencyConverter } from './CurrencyConverter';
  */
 export declare class HeadHunterApi {
     currencyConverter: CurrencyConverter;
+    userAgent: string;
+    timeout: number;
     /**
      *
      * @param currencyConverter currency converter to use
+     * @param userAgent User-Agent header to be send in requests
+     * @param timeout timeout of requests
      */
-    constructor(currencyConverter: CurrencyConverter);
+    constructor(currencyConverter: CurrencyConverter, userAgent?: string, timeout?: number);
     /**
      * Get vacancy statistics for specified area and experience
      * @param keywords array of keywords to search

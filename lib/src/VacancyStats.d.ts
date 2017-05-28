@@ -22,7 +22,7 @@ export declare class VacancyStats {
      * @param json JSON response from HH service
      * @param converter CurrencyConverter implementation to convert currency
      */
-    static parse(json: string, converter: CurrencyConverter): VacancyStats;
+    static parse(json: any, converter: CurrencyConverter): VacancyStats;
     /**
      * Merge multiple VacancyStats instance to single instance
      * @param stats VacancyStats to merge

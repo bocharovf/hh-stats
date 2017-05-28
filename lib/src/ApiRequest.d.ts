@@ -10,6 +10,10 @@ export declare class ApiRequest {
      */
     timeout: number;
     /**
+     * User agent header
+     */
+    userAgent: string;
+    /**
      *
      * @param resource resource name to request
      * @param params query string parameters
