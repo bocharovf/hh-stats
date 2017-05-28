@@ -12,8 +12,12 @@ export class HeadHunterApi {
     /**
      * 
      * @param currencyConverter currency converter to use
+     * @param userAgent User-Agent header to be send in requests
+     * @param timeout timeout of requests
      */
-    constructor(public currencyConverter: CurrencyConverter) {
+    constructor(public currencyConverter: CurrencyConverter, 
+                public userAgent: string = Settings.DEFAULT_USER_AGENT,
+                public timeout: number = Settings.DEFAULT_REQUEST_TIMEOUT) {
 
     }
 
@@ -36,16 +40,22 @@ export class HeadHunterApi {
      * @param params array of resuest parameters
      */
     getCustomVacancy(...params: RequestParam[]): Promise<VacancyStats> {
-        let resource = 'vacancies';
-        return Promise.all([
-            new ApiRequest(resource, this.addPaging(params, 1, Settings.PAGE_SIZE)).run(),
-            new ApiRequest(resource, this.addPaging(params, 2, Settings.PAGE_SIZE)).run(),
-            new ApiRequest(resource, this.addPaging(params, 3, Settings.PAGE_SIZE)).run(),
-            new ApiRequest(resource, this.addPaging(params, 4, Settings.PAGE_SIZE)).run()
-        ]).then(results => {
-            let stats = results.map(resp => VacancyStats.parse(resp, this.currencyConverter));
-            return VacancyStats.merge(...stats);
+        const resource = 'vacancies';
+        let requests = [0, 1, 2, 3].map(i => {
+            let request = new ApiRequest(
+                resource, 
+                this.addPaging(params, i, Settings.PAGE_SIZE)
+            );
+            request.timeout = this.timeout;
+            request.userAgent = this.userAgent;
+            return request.run();
         });
+                
+        return Promise.all(requests)
+                    .then(results => {
+                        let stats = results.map(resp => VacancyStats.parse(resp, this.currencyConverter));
+                        return VacancyStats.merge(...stats);
+                    });
     }
 
     /**
