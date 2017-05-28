@@ -36,7 +36,7 @@ export class HeadHunterApi {
      * @param params array of resuest parameters
      */
     getCustomVacancy(...params: RequestParam[]): Promise<VacancyStats> {
-        let resource = 'vacancy';
+        let resource = 'vacancies';
         return Promise.all([
             new ApiRequest(resource, this.addPaging(params, 1, Settings.PAGE_SIZE)).run(),
             new ApiRequest(resource, this.addPaging(params, 2, Settings.PAGE_SIZE)).run(),
