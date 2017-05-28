@@ -12,6 +12,11 @@ export class ApiRequest {
     timeout = Settings.DEFAULT_REQUEST_TIMEOUT;
 
     /**
+     * User agent header
+     */
+    userAgent = Settings.DEFAULT_USER_AGENT;
+
+    /**
      * 
      * @param resource resource name to request
      * @param params query string parameters
@@ -25,8 +30,11 @@ export class ApiRequest {
      */
     run(): Promise<string> {
         let url = this.getRequestUrl();
-        
+
         let request = fetch(url, {
+            headers: {
+                'User-Agent': this.userAgent
+            },            
             mode: 'cors'
         }).then(res => {
             if (res.status != 200) 

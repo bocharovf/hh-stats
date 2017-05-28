@@ -14,3 +14,6 @@ export const DEFAULT_REQUEST_TIMEOUT = 1500; // ms
  * Max page size for quering HH service
  */
 export const PAGE_SIZE = 500; // ms
+
+
+export const DEFAULT_USER_AGENT = 'hh-stats npm package'
