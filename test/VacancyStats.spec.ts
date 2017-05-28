@@ -1,13 +1,13 @@
 import { VacancyStats } from '../src/VacancyStats';
 import { CurrencyConverter, DictCurrencyConverter } from '../src/CurrencyConverter';
 
-const emptyJson = `
+const emptyJson = JSON.parse(`
     {
     "items":[],
     "found":0
     }            
-`;
-const multipleFullSalaryJson = `
+`);
+const multipleFullSalaryJson = JSON.parse(`
     {
     "items":[
         {
@@ -27,8 +27,8 @@ const multipleFullSalaryJson = `
     ],
     "found":398618
     }            
-`;
-const multiplePartialSalaryJson = `
+`);
+const multiplePartialSalaryJson = JSON.parse(`
     {
     "items":[
         {
@@ -51,8 +51,8 @@ const multiplePartialSalaryJson = `
     ],
     "found":398618
     }            
-`;
-const differentCurrencyJson = `
+`);
+const differentCurrencyJson = JSON.parse(`
     {
     "items":[
         {
@@ -72,7 +72,7 @@ const differentCurrencyJson = `
     ],
     "found":398618
     }            
-`;
+`);
 
 describe ("class VacancyStats",() => {
 

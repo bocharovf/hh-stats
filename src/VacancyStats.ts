@@ -28,8 +28,8 @@ export class VacancyStats {
      * @param json JSON response from HH service
      * @param converter CurrencyConverter implementation to convert currency
      */
-    static parse(json: string, converter: CurrencyConverter): VacancyStats {
-        let resp: VacancyResponse = JSON.parse(json);
+    static parse(json: any, converter: CurrencyConverter): VacancyStats {
+        let resp = json as VacancyResponse;
 
         let salaries = resp.items
                             .map(i => i.salary)

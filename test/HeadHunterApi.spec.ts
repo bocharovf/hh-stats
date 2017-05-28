@@ -7,7 +7,7 @@ describe('class HeadHunterApi', () => {
 
     describe('The "getCustomVacancy" method', () => {
 
-        const sampleResponseJson = `
+        const sampleResponseJson = JSON.parse(`
             {
             "items":[
                 {
@@ -27,7 +27,7 @@ describe('class HeadHunterApi', () => {
             ],
             "found":398618
             }            
-        `;
+        `);
 
         let converter: CurrencyConverter;
         let api: HeadHunterApi;
