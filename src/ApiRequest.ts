@@ -28,7 +28,7 @@ export class ApiRequest {
     /**
      * Perform request
      */
-    run(): Promise<string> {
+    run(): Promise<any> {
         let url = this.getRequestUrl();
 
         let request = fetch(url, {
