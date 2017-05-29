@@ -22,7 +22,7 @@ export declare class ApiRequest {
     /**
      * Perform request
      */
-    run(): Promise<string>;
+    run(): Promise<any>;
     /**
      * Build full request URL
      */

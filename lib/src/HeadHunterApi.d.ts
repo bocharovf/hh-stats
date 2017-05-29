@@ -1,6 +1,8 @@
 import { VacancyStats } from './VacancyStats';
 import { RequestParam } from './RequestParam';
 import { CurrencyConverter } from './CurrencyConverter';
+import { CurrencyItem, ExperienceItem } from './response/DictionaryResponse';
+import { AreaItem } from './response/AreaResponse';
 /**
  * Head Hunter API client
  */
@@ -8,6 +10,8 @@ export declare class HeadHunterApi {
     currencyConverter: CurrencyConverter;
     userAgent: string;
     timeout: number;
+    private _dictionary;
+    private _area;
     /**
      *
      * @param currencyConverter currency converter to use
@@ -29,6 +33,21 @@ export declare class HeadHunterApi {
      */
     getCustomVacancy(...params: RequestParam[]): Promise<VacancyStats>;
     /**
+     * Get hierarchical list of areas
+     * @param noCache if true disable cache
+     */
+    getAreas(noCache?: boolean): Promise<AreaItem[]>;
+    /**
+     * Get list of experiences
+     * @param noCache if true disable cache
+     */
+    getExperincies(noCache?: boolean): Promise<ExperienceItem[]>;
+    /**
+     * Get list of currency rates
+     * @param noCache if true disable cache
+     */
+    getCurrencies(noCache?: boolean): Promise<CurrencyItem[]>;
+    /**
      * Add paging parameters to request
      * @param params original parameters
      * @param page page number to request
@@ -41,4 +60,9 @@ export declare class HeadHunterApi {
      * @param keywords original keywords
      */
     private prepareKeywords(keywords);
+    /**
+     * Get cacheable dictionary resource
+     * @param noCache if true disable cache
+     */
+    private getDictionaries(noCache);
 }

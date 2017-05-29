@@ -1,3 +1,4 @@
+import { CurrencyItem } from './response/DictionaryResponse';
 /**
  * Support currency convertion
  */
@@ -8,19 +9,13 @@ export interface CurrencyConverter {
  * Simple currency converter based on list of currencies and rates
  */
 export declare class DictCurrencyConverter implements CurrencyConverter {
-    dict: Array<{
-        code: string;
-        rate: number;
-    }>;
+    dict: CurrencyItem[];
     private rates;
     /**
      *
-     * @param dict list of currency code and rate
+     * @param dict list of currency items
      */
-    constructor(dict: Array<{
-        code: string;
-        rate: number;
-    }>);
+    constructor(dict: CurrencyItem[]);
     /**
      * Convert value from original currency to target currency
      * @param value value to convert
