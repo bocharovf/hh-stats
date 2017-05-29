@@ -2,12 +2,17 @@ import { VacancyStats } from './VacancyStats';
 import { RequestParam } from './RequestParam';
 import { ApiRequest } from './ApiRequest';
 import { CurrencyConverter } from './CurrencyConverter';
+import { DictionaryResponse, CurrencyItem, ExperienceItem } from './response/DictionaryResponse';
+import { AreaItem } from './response/AreaResponse';
 import * as Settings from './settings';
 
 /**
  * Head Hunter API client
  */
 export class HeadHunterApi {
+
+    private _dictionary: DictionaryResponse;
+    private _area: AreaItem[];
 
     /**
      * 
@@ -59,6 +64,37 @@ export class HeadHunterApi {
     }
 
     /**
+     * Get hierarchical list of areas
+     * @param noCache if true disable cache
+     */
+    getAreas(noCache: boolean = false): Promise<AreaItem[]> {
+        const resource = 'areas';
+        if(noCache || !this._area)
+            return new ApiRequest(resource).run().then(area => {
+                this._area = area;
+                return this._area;
+            })
+        else 
+            return Promise.resolve(this._area);
+    }
+
+    /**
+     * Get list of experiences
+     * @param noCache if true disable cache
+     */
+    getExperincies(noCache: boolean = false): Promise<ExperienceItem[]> {
+        return this.getDictionaries(noCache).then(d => d.experience);
+    }
+
+    /**
+     * Get list of currency rates
+     * @param noCache if true disable cache
+     */
+    getCurrencies(noCache: boolean = false): Promise<CurrencyItem[]> {
+        return this.getDictionaries(noCache).then(d => d.currency);
+    }   
+
+    /**
      * Add paging parameters to request
      * @param params original parameters
      * @param page page number to request
@@ -82,6 +118,21 @@ export class HeadHunterApi {
                         // distinct
                         .filter((value, index, self) => self.indexOf(value) === index)
                         .join(' OR ');
+    }
+
+    /**
+     * Get cacheable dictionary resource 
+     * @param noCache if true disable cache 
+     */
+    private getDictionaries(noCache: boolean): Promise<DictionaryResponse> {
+        const resource = 'dictionaries';
+        if(noCache || !this._dictionary)
+            return new ApiRequest(resource).run().then(d => {
+                this._dictionary = d;
+                return this._dictionary;
+            })
+        else 
+            return Promise.resolve(this._dictionary);
     }
     
 }
