@@ -3,12 +3,11 @@
   "version": "1.0.0",
   "description": "Query headhunter API and calculate job statistics",
   "main": "lib/index.js",
-  "typings": "dist/index.d.ts",
+  "typings": "lib/index.d.ts",
   "scripts": {
     "test": "./node_modules/karma/bin/karma start --auto-watch",
-    "start": "node dist/index.js",
     "build": "./node_modules/.bin/tsc",
-    "live": "nodemon --exec ./node_modules/.bin/ts-node -- ./src/index.ts"
+    "live": "nodemon --exec ./node_modules/.bin/ts-node -- ./index.ts"
   },
   "keywords": [
     "headhunter",
