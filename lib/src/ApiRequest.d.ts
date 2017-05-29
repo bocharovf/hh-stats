@@ -26,6 +26,11 @@ export declare class ApiRequest {
     /**
      * Build full request URL
      */
-    getRequestUrl(): string;
-    private delay(ms);
+    private getRequestUrl();
+    /**
+     * Race between promise and timeout
+     * @param promise promise to timeout
+     * @param timeout timeout in ms
+     */
+    private race(promise, timeout);
 }
