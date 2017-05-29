@@ -1,4 +1,5 @@
-import {RequestParam} from './RequestParam';
+import { RequestParam } from './RequestParam';
+import { TimeoutError } from './errors/TimeoutError';
 import * as Settings from './settings';
 
 /**
@@ -41,10 +42,8 @@ export class ApiRequest {
                 throw new Error(res.statusText);
             return res.json();
         });
-        
-        return Promise.race([
-            request, this.delay(this.timeout)
-        ]);
+
+        return this.race(request, this.timeout);
     }
 
     /**
@@ -58,8 +57,25 @@ export class ApiRequest {
         return `${baseUrl}/${this.resource}?${queryString}`;
     }
 
-    private delay(ms: number) {
-        return new Promise((resolve: any ) => setTimeout(resolve, ms));
+    /**
+     * Race between promise and timeout
+     * @param promise promise to timeout
+     * @param timeout timeout in ms
+     */
+    private race(promise: Promise<any>, timeout: number) {
+        const error = new TimeoutError('Api request timeout expired');
+        let timer: NodeJS.Timer;
+
+        return Promise.race([
+            new Promise((resolve, reject) => {
+                timer = setTimeout(reject, timeout, error);
+                return timer;
+            }),
+            promise.then((value) => {
+                clearTimeout(timer);
+                return value;
+            })
+        ]);
     }
 
 }
