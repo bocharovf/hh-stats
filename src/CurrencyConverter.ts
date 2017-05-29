@@ -1,3 +1,4 @@
+import { CurrencyItem } from './response/DictionaryResponse';
 
 /**
  * Support currency convertion
@@ -19,10 +20,9 @@ export class DictCurrencyConverter implements CurrencyConverter {
 
     /**
      * 
-     * @param dict list of currency code and rate
+     * @param dict list of currency items
      */
-    constructor(public dict:Array<{code: string, rate: number}>) {
-
+    constructor(public dict: CurrencyItem[]) {
         for (let currency of dict) {
             this.rates[currency.code] = currency.rate;
         }
