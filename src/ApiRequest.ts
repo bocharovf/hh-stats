@@ -49,7 +49,7 @@ export class ApiRequest {
     /**
      * Build full request URL
      */
-    getRequestUrl() {
+    private getRequestUrl() {
         let baseUrl = Settings.HH_API_BASE_URL;
         let queryString = this.params.filter(p => p.name)
                                     .map(p => p.query)
