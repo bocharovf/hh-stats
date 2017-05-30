@@ -35,9 +35,10 @@ export class HeadHunterApi {
      */
     getVacancy(keywords: string[], area?: string, experience?: string): Promise<VacancyStats> {
         let textParam = new RequestParam('text', this.prepareKeywords(keywords));
-        let areaParam = new RequestParam('area', area);
-        let experienceParam = new RequestParam('experience', experience);
-        return this.getCustomVacancy(textParam, areaParam, experienceParam);
+        let params = [textParam];
+        if (area) params.push(new RequestParam('area', area));
+        if (experience) params.push(new RequestParam('experience', experience));
+        return this.getCustomVacancy(...params);
     }
 
     /**
