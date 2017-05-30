@@ -42,7 +42,7 @@ export class ApiRequest {
                 throw new Error(res.statusText);
             return res.json();
         });
-
+        
         return this.race(request, this.timeout);
     }
 
@@ -74,8 +74,13 @@ export class ApiRequest {
             promise.then((value) => {
                 clearTimeout(timer);
                 return value;
-            })
-        ]);
+            }).catch((error) => error) 
+        ]).then(result => {
+            if(result instanceof Error)
+                throw result;
+            else
+                return result;
+        });
     }
 
 }
