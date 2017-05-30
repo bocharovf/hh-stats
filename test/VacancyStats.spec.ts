@@ -78,10 +78,11 @@ describe ("class VacancyStats",() => {
 
     describe("The 'parse' method", () => {
         let currencyConverter: CurrencyConverter;
-        
+        let convert: jasmine.Spy;
+
         beforeEach(() => {
             currencyConverter = new DictCurrencyConverter([]);
-            spyOn(currencyConverter, 'convert').and.callFake( (value:number, from:string, to:string) => value);
+            convert = spyOn(currencyConverter, 'convert').and.callFake( (value:number, from:string, to:string) => value);
         });
 
         it('parse zero items response', () => {
@@ -113,7 +114,6 @@ describe ("class VacancyStats",() => {
 
         it('convert currency to rubles using CurrencyConverter', () => {
             const stat = VacancyStats.parse(differentCurrencyJson, currencyConverter);
-            let convert = currencyConverter.convert as jasmine.Spy;
             expect(convert.calls.count()).toEqual(2 * 3, 'total call amount');
             expect(convert.calls.argsFor(0)).toEqual([10, 'EUR', 'RUR'], 'item #1 convert min salary');
             expect(convert.calls.argsFor(1)).toEqual([30, 'USD', 'RUR'], 'item #2 convert min salary');
