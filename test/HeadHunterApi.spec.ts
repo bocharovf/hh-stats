@@ -212,6 +212,17 @@ describe('class HeadHunterApi', () => {
                 new RequestParam('text', 'js OR javascript')
             );
         });
+
+        it('pass additional parameters to "getCustomVacancy"', () => {
+            const getCustomVacancy = spyOn(api, 'getCustomVacancy').and.callFake( () => Promise.resolve(fakeStat) );
+            const additionalParam = new RequestParam('add', 'yes');
+            api.getVacancy(['js', 'javascript'], null, null, additionalParam);
+            
+            expect(getCustomVacancy).toHaveBeenCalledWith(
+                new RequestParam('text', 'js OR javascript'),
+                additionalParam
+            );
+        });        
     });
 
     describe('the "getAreas" method', () => {        

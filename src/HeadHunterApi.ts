@@ -33,12 +33,18 @@ export class HeadHunterApi {
      * @param experience experience category name
      * @param params additional request parameters
      */
-    getVacancy(keywords: string[], area?: string, experience?: string): Promise<VacancyStats> {
+    getVacancy(
+        keywords: string[], 
+        area?: string, 
+        experience?: string, 
+        ...params: RequestParam[]
+    ): Promise<VacancyStats> {
         let textParam = new RequestParam('text', this.prepareKeywords(keywords));
-        let params = [textParam];
-        if (area) params.push(new RequestParam('area', area));
-        if (experience) params.push(new RequestParam('experience', experience));
-        return this.getCustomVacancy(...params);
+        let customParams = [textParam];
+        if (area) customParams.push(new RequestParam('area', area));
+        if (experience) customParams.push(new RequestParam('experience', experience));
+        customParams.push(...params);
+        return this.getCustomVacancy(...customParams);
     }
 
     /**

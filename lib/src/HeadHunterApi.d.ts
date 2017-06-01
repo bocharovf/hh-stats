@@ -26,7 +26,7 @@ export declare class HeadHunterApi {
      * @param experience experience category name
      * @param params additional request parameters
      */
-    getVacancy(keywords: string[], area?: string, experience?: string): Promise<VacancyStats>;
+    getVacancy(keywords: string[], area?: string, experience?: string, ...params: RequestParam[]): Promise<VacancyStats>;
     /**
      * Get vacancy statistics for custom filters
      * @param params array of resuest parameters
