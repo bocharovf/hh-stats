@@ -1,7 +1,7 @@
 {
   "name": "hh-stats",
   "version": "1.0.0",
-  "description": "Query headhunter API and calculate job statistics",
+  "description": "HeadHunter salary statistics",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
@@ -14,6 +14,14 @@
     "statistics"
   ],
   "author": "Bocharov Filipp <bocharovf@gmail.com>",
+  "bugs": {
+    "url": "https://github.com/bocharovf/hh-stats/issues",
+    "email": "bocharovf@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bocharovf/hh-stats.git"
+  },
   "license": "MIT",
   "devDependencies": {
     "@types/isomorphic-fetch": "0.0.34",
