@@ -108,7 +108,7 @@ describe('class HeadHunterApi', () => {
     beforeEach(() => {
         converter = new DictCurrencyConverter([]);
         convert = spyOn(converter, 'convert').and.callFake( (value:number, from:string, to:string) => value);
-        api = new HeadHunterApi(converter);
+        api = new HeadHunterApi();
     });       
 
     describe('The "getCustomVacancy" method', () => {
@@ -118,7 +118,7 @@ describe('class HeadHunterApi', () => {
         });    
 
         it('requests 4 vacancy pages from api', (done) => {
-            api.getCustomVacancy().then(stats => {
+            api.getCustomVacancy(converter).then(stats => {
                 expect(run).toHaveBeenCalledTimes(4);
                 done();
             });
@@ -126,7 +126,7 @@ describe('class HeadHunterApi', () => {
 
         it('parses 4 vacancy responses', (done) => {
             const parse = spyOn(VacancyStats, 'parse').and.callThrough();
-            api.getCustomVacancy().then( stats => {
+            api.getCustomVacancy(converter).then( stats => {
                 expect(parse).toHaveBeenCalledTimes(4);
                 expect(parse.calls.allArgs()).toEqual([
                     [sampleResponseJson, converter], 
@@ -140,7 +140,7 @@ describe('class HeadHunterApi', () => {
 
         it('merges 4 api responses to single', (done) => {
             const merge = spyOn(VacancyStats, 'merge').and.callThrough();
-            api.getCustomVacancy().then( stats => {
+            api.getCustomVacancy(converter).then( stats => {
                 expect(merge).toHaveBeenCalledTimes(1);
                 expect(merge.calls.argsFor(0).length).toEqual(4);
                 done();
@@ -148,7 +148,7 @@ describe('class HeadHunterApi', () => {
         });        
    
         it('process and merges result correctly', (done) => {
-            api.getCustomVacancy().then(stats => {
+            api.getCustomVacancy(converter).then(stats => {
                 expect(stats.amount).toEqual(398618);
                 expect(stats.used).toEqual(8);
                 expect(stats.minSalary).toEqual(10000);
@@ -168,9 +168,10 @@ describe('class HeadHunterApi', () => {
 
         it('call "getCustomVacancy" method with keywords, area and experience paramters', () => {
             const getCustomVacancy = spyOn(api, 'getCustomVacancy').and.callFake( () => Promise.resolve(fakeStat) );
-            api.getVacancy(['js'], '113', 'noExperience');
+            api.getVacancy(converter, ['js'], '113', 'noExperience');
             
             expect(getCustomVacancy).toHaveBeenCalledWith(
+                converter,
                 new RequestParam('text', 'js'),
                 new RequestParam('area', '113'),
                 new RequestParam('experience', 'noExperience')
@@ -179,36 +180,40 @@ describe('class HeadHunterApi', () => {
 
         it('do not pass null argumetns to "getCustomVacancy"', () => {
             const getCustomVacancy = spyOn(api, 'getCustomVacancy').and.callFake( () => Promise.resolve(fakeStat) );
-            api.getVacancy(['js'], null, null);
+            api.getVacancy(converter, ['js'], null, null);
             
             expect(getCustomVacancy).toHaveBeenCalledWith(
+                converter,
                 new RequestParam('text', 'js')
             );
         });
 
         it('join keywords with "OR" separator for "text" parameter', () => {
             const getCustomVacancy = spyOn(api, 'getCustomVacancy').and.callFake( () => Promise.resolve(fakeStat) );
-            api.getVacancy(['js', 'javascript', 'es6'], null, null);
+            api.getVacancy(converter, ['js', 'javascript', 'es6'], null, null);
             
             expect(getCustomVacancy).toHaveBeenCalledWith(
+                converter,
                 new RequestParam('text', 'js OR javascript OR es6')
             );
         });
 
         it('takes only unique keywords for "text" parameter', () => {
             const getCustomVacancy = spyOn(api, 'getCustomVacancy').and.callFake( () => Promise.resolve(fakeStat) );
-            api.getVacancy(['js', 'javascript', 'js'], null, null);
+            api.getVacancy(converter, ['js', 'javascript', 'js'], null, null);
             
             expect(getCustomVacancy).toHaveBeenCalledWith(
+                converter,
                 new RequestParam('text', 'js OR javascript')
             );
         });
 
         it('skip empty keywords for "text" parameter', () => {
             const getCustomVacancy = spyOn(api, 'getCustomVacancy').and.callFake( () => Promise.resolve(fakeStat) );
-            api.getVacancy(['js', '', 'javascript', null], null, null);
+            api.getVacancy(converter, ['js', '', 'javascript', null], null, null);
             
             expect(getCustomVacancy).toHaveBeenCalledWith(
+                converter,
                 new RequestParam('text', 'js OR javascript')
             );
         });
@@ -216,9 +221,10 @@ describe('class HeadHunterApi', () => {
         it('pass additional parameters to "getCustomVacancy"', () => {
             const getCustomVacancy = spyOn(api, 'getCustomVacancy').and.callFake( () => Promise.resolve(fakeStat) );
             const additionalParam = new RequestParam('add', 'yes');
-            api.getVacancy(['js', 'javascript'], null, null, additionalParam);
+            api.getVacancy(converter, ['js', 'javascript'], null, null, additionalParam);
             
             expect(getCustomVacancy).toHaveBeenCalledWith(
+                converter,
                 new RequestParam('text', 'js OR javascript'),
                 additionalParam
             );

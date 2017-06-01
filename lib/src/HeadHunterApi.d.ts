@@ -7,31 +7,31 @@ import { AreaItem } from './response/AreaResponse';
  * Head Hunter API client
  */
 export declare class HeadHunterApi {
-    currencyConverter: CurrencyConverter;
     userAgent: string;
     timeout: number;
     private _dictionary;
     private _area;
     /**
      *
-     * @param currencyConverter currency converter to use
      * @param userAgent User-Agent header to be send in requests
      * @param timeout timeout of requests
      */
-    constructor(currencyConverter: CurrencyConverter, userAgent?: string, timeout?: number);
+    constructor(userAgent?: string, timeout?: number);
     /**
      * Get vacancy statistics for specified area and experience
+     * @param currencyConverter currency converter to use
      * @param keywords array of keywords to search
      * @param area area name
      * @param experience experience category name
      * @param params additional request parameters
      */
-    getVacancy(keywords: string[], area?: string, experience?: string, ...params: RequestParam[]): Promise<VacancyStats>;
+    getVacancy(currencyConverter: CurrencyConverter, keywords: string[], area?: string, experience?: string, ...params: RequestParam[]): Promise<VacancyStats>;
     /**
      * Get vacancy statistics for custom filters
+     * @param currencyConverter currency converter to use
      * @param params array of resuest parameters
      */
-    getCustomVacancy(...params: RequestParam[]): Promise<VacancyStats>;
+    getCustomVacancy(currencyConverter: CurrencyConverter, ...params: RequestParam[]): Promise<VacancyStats>;
     /**
      * Get hierarchical list of areas
      * @param noCache if true disable cache

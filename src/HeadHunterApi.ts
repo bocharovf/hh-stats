@@ -16,24 +16,24 @@ export class HeadHunterApi {
 
     /**
      * 
-     * @param currencyConverter currency converter to use
      * @param userAgent User-Agent header to be send in requests
      * @param timeout timeout of requests
      */
-    constructor(public currencyConverter: CurrencyConverter, 
-                public userAgent: string = Settings.DEFAULT_USER_AGENT,
+    constructor(public userAgent: string = Settings.DEFAULT_USER_AGENT,
                 public timeout: number = Settings.DEFAULT_REQUEST_TIMEOUT) {
 
     }
 
     /**
      * Get vacancy statistics for specified area and experience
+     * @param currencyConverter currency converter to use
      * @param keywords array of keywords to search
      * @param area area name
      * @param experience experience category name
      * @param params additional request parameters
      */
     getVacancy(
+        currencyConverter: CurrencyConverter,
         keywords: string[], 
         area?: string, 
         experience?: string, 
@@ -44,14 +44,15 @@ export class HeadHunterApi {
         if (area) customParams.push(new RequestParam('area', area));
         if (experience) customParams.push(new RequestParam('experience', experience));
         customParams.push(...params);
-        return this.getCustomVacancy(...customParams);
+        return this.getCustomVacancy(currencyConverter, ...customParams);
     }
 
     /**
      * Get vacancy statistics for custom filters
+     * @param currencyConverter currency converter to use
      * @param params array of resuest parameters
      */
-    getCustomVacancy(...params: RequestParam[]): Promise<VacancyStats> {
+    getCustomVacancy(currencyConverter: CurrencyConverter, ...params: RequestParam[]): Promise<VacancyStats> {
         const resource = 'vacancies';
         let requests = [0, 1, 2, 3].map(i => {
             let request = new ApiRequest(
@@ -65,7 +66,7 @@ export class HeadHunterApi {
                 
         return Promise.all(requests)
                     .then(results => {
-                        let stats = results.map(resp => VacancyStats.parse(resp, this.currencyConverter));
+                        let stats = results.map(resp => VacancyStats.parse(resp, currencyConverter));
                         return VacancyStats.merge(...stats);
                     });
     }
