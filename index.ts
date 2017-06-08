@@ -4,3 +4,4 @@ export { CurrencyConverter, DictCurrencyConverter } from './src/CurrencyConverte
 export { RequestParam } from './src/RequestParam';
 export { AreaItem } from './src/response/AreaResponse';
 export { CurrencyItem, ExperienceItem } from './src/response/DictionaryResponse';
+export { VacancyStats } from './src/VacancyStats';
