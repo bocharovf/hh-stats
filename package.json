@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
-    "test": "node ./node_modules/karma/bin/karma start --auto-watch",
+    "test": "node ./node_modules/karma/bin/karma start --auto-watch --single-run",
     "build": "./node_modules/.bin/tsc",
     "live": "nodemon --exec ./node_modules/.bin/ts-node -- ./index.ts"
   },
