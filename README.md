@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/bocharovf/hh-stats.svg?branch=master)](https://travis-ci.org/bocharovf/hh-stats)
 # HeadHunter salary statistics
 A tiny library to agregate vacancy information from HeadHunter API.
 
