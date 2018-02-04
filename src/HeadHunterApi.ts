@@ -11,11 +11,11 @@ import * as Settings from './settings';
  */
 export class HeadHunterApi {
 
-    private _dictionary: DictionaryResponse;
-    private _area: AreaItem[];
+    private _dictionary?: DictionaryResponse;
+    private _area?: AreaItem[];
 
     /**
-     * 
+     *
      * @param userAgent User-Agent header to be send in requests
      * @param timeout timeout of requests
      */
@@ -34,9 +34,9 @@ export class HeadHunterApi {
      */
     getVacancy(
         currencyConverter: CurrencyConverter,
-        keywords: string[], 
-        area?: string, 
-        experience?: string, 
+        keywords: string[],
+        area?: string,
+        experience?: string,
         ...params: RequestParam[]
     ): Promise<VacancyStats> {
         let textParam = new RequestParam('text', this.prepareKeywords(keywords));
@@ -50,25 +50,36 @@ export class HeadHunterApi {
     /**
      * Get vacancy statistics for custom filters
      * @param currencyConverter currency converter to use
-     * @param params array of resuest parameters
+     * @param params additional request parameters
      */
     getCustomVacancy(currencyConverter: CurrencyConverter, ...params: RequestParam[]): Promise<VacancyStats> {
+        const requestsAmount = Math.ceil(Settings.MAX_VACANCIES_AMOUNT / Settings.PAGE_SIZE);
+
+        const requests = this.getVacancyRequests(requestsAmount, ...params);
+
+        return Promise.all(requests)
+                    .then(results => {
+                        let stats = results.map(resp => VacancyStats.parse(resp, currencyConverter));
+                        return VacancyStats.merge(...stats);
+                    });
+    }
+
+    /**
+     * Generates specified amount of vacancy requests
+     * @param vacanciesAmount amount of requests
+     * @param params additional request parameters
+     */
+    private getVacancyRequests(requestsAmount: number, ...params: RequestParam[]): Promise<any>[] {
         const resource = 'vacancies';
-        let requests = [0, 1, 2, 3].map(i => {
+        return Array(requestsAmount).fill(0).map((_, i) => {
             let request = new ApiRequest(
-                resource, 
+                resource,
                 this.addPaging(params, i, Settings.PAGE_SIZE)
             );
             request.timeout = this.timeout;
             request.userAgent = this.userAgent;
             return request.run();
         });
-                
-        return Promise.all(requests)
-                    .then(results => {
-                        let stats = results.map(resp => VacancyStats.parse(resp, currencyConverter));
-                        return VacancyStats.merge(...stats);
-                    });
     }
 
     /**
@@ -80,9 +91,9 @@ export class HeadHunterApi {
         if(noCache || !this._area)
             return new ApiRequest(resource).run().then(area => {
                 this._area = area;
-                return this._area;
+                return this._area as AreaItem[];
             })
-        else 
+        else
             return Promise.resolve(this._area);
     }
 
@@ -100,7 +111,7 @@ export class HeadHunterApi {
      */
     getCurrencies(noCache: boolean = false): Promise<CurrencyItem[]> {
         return this.getDictionaries(noCache).then(d => d.currency);
-    }   
+    }
 
     /**
      * Add paging parameters to request
@@ -115,7 +126,7 @@ export class HeadHunterApi {
             new RequestParam('page', page.toString()),
             new RequestParam('per_page', perPage.toString())
         ];
-    }    
+    }
 
     /**
      * Prepare search expression and filter non-empty and unique keywords
@@ -129,18 +140,18 @@ export class HeadHunterApi {
     }
 
     /**
-     * Get cacheable dictionary resource 
-     * @param noCache if true disable cache 
+     * Get cacheable dictionary resource
+     * @param noCache if true disable cache
      */
     private getDictionaries(noCache: boolean): Promise<DictionaryResponse> {
         const resource = 'dictionaries';
         if(noCache || !this._dictionary)
             return new ApiRequest(resource).run().then(d => {
                 this._dictionary = d;
-                return this._dictionary;
+                return this._dictionary as DictionaryResponse;
             })
-        else 
+        else
             return Promise.resolve(this._dictionary);
     }
-    
+
 }

@@ -9,8 +9,8 @@ import { AreaItem } from './response/AreaResponse';
 export declare class HeadHunterApi {
     userAgent: string;
     timeout: number;
-    private _dictionary;
-    private _area;
+    private _dictionary?;
+    private _area?;
     /**
      *
      * @param userAgent User-Agent header to be send in requests
@@ -29,9 +29,15 @@ export declare class HeadHunterApi {
     /**
      * Get vacancy statistics for custom filters
      * @param currencyConverter currency converter to use
-     * @param params array of resuest parameters
+     * @param params additional request parameters
      */
     getCustomVacancy(currencyConverter: CurrencyConverter, ...params: RequestParam[]): Promise<VacancyStats>;
+    /**
+     * Generates specified amount of vacancy requests
+     * @param vacanciesAmount amount of requests
+     * @param params additional request parameters
+     */
+    private getVacancyRequests(requestsAmount, ...params);
     /**
      * Get hierarchical list of areas
      * @param noCache if true disable cache

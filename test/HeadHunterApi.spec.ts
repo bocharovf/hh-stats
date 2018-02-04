@@ -24,10 +24,10 @@ const sampleResponseJson = JSON.parse(`
                 "from":20000,
                 "currency":"RUR"
             }
-        }                
+        }
     ],
     "found":398618
-    }            
+    }
 `);
 
 const sampleAreasJson = JSON.parse(`
@@ -94,7 +94,7 @@ const sampleDictionaryJson = JSON.parse(`
          "id":"moreThan6",
          "name":"Более 6 лет"
       }
-   ]      
+   ]
 }
 `);
 
@@ -102,60 +102,55 @@ describe('class HeadHunterApi', () => {
 
     let converter: CurrencyConverter;
     let api: HeadHunterApi;
-    let convert: jasmine.Spy;        
-    let run: jasmine.Spy; 
+    let convert: jasmine.Spy;
+    let run: jasmine.Spy;
 
     beforeEach(() => {
         converter = new DictCurrencyConverter([]);
         convert = spyOn(converter, 'convert').and.callFake( (value:number, from:string, to:string) => value);
         api = new HeadHunterApi();
-    });       
+    });
 
     describe('The "getCustomVacancy" method', () => {
 
         beforeEach(() => {
             run = spyOn(ApiRequest.prototype, 'run').and.callFake(() => Promise.resolve(sampleResponseJson));
-        });    
+        });
 
-        it('requests 4 vacancy pages from api', (done) => {
+        it('requests 20 vacancy pages from api', (done) => {
             api.getCustomVacancy(converter).then(stats => {
-                expect(run).toHaveBeenCalledTimes(4);
+                expect(run).toHaveBeenCalledTimes(20);
                 done();
             });
         });
 
-        it('parses 4 vacancy responses', (done) => {
+        it('parses 20 vacancy responses', (done) => {
             const parse = spyOn(VacancyStats, 'parse').and.callThrough();
             api.getCustomVacancy(converter).then( stats => {
-                expect(parse).toHaveBeenCalledTimes(4);
-                expect(parse.calls.allArgs()).toEqual([
-                    [sampleResponseJson, converter], 
-                    [sampleResponseJson, converter], 
-                    [sampleResponseJson, converter], 
-                    [sampleResponseJson, converter]
-                ]);
+                expect(parse).toHaveBeenCalledTimes(20);
+                expect(parse.calls.argsFor(0)).toEqual([sampleResponseJson, converter]);
                 done();
             });
         });
 
-        it('merges 4 api responses to single', (done) => {
+        it('merges 20 api responses to single', (done) => {
             const merge = spyOn(VacancyStats, 'merge').and.callThrough();
             api.getCustomVacancy(converter).then( stats => {
                 expect(merge).toHaveBeenCalledTimes(1);
-                expect(merge.calls.argsFor(0).length).toEqual(4);
+                expect(merge.calls.argsFor(0).length).toEqual(20);
                 done();
             });
-        });        
-   
+        });
+
         it('process and merges result correctly', (done) => {
             api.getCustomVacancy(converter).then(stats => {
                 expect(stats.amount).toEqual(398618);
-                expect(stats.used).toEqual(8);
+                expect(stats.used).toEqual(40);
                 expect(stats.minSalary).toEqual(10000);
                 expect(stats.maxSalary).toEqual(90000);
                 expect(stats.avgSalary).toEqual(37500);
                 done();
-            });            
+            });
         });
 
     });
@@ -169,7 +164,7 @@ describe('class HeadHunterApi', () => {
         it('call "getCustomVacancy" method with keywords, area and experience paramters', () => {
             const getCustomVacancy = spyOn(api, 'getCustomVacancy').and.callFake( () => Promise.resolve(fakeStat) );
             api.getVacancy(converter, ['js'], '113', 'noExperience');
-            
+
             expect(getCustomVacancy).toHaveBeenCalledWith(
                 converter,
                 new RequestParam('text', 'js'),
@@ -181,7 +176,7 @@ describe('class HeadHunterApi', () => {
         it('do not pass null argumetns to "getCustomVacancy"', () => {
             const getCustomVacancy = spyOn(api, 'getCustomVacancy').and.callFake( () => Promise.resolve(fakeStat) );
             api.getVacancy(converter, ['js'], null, null);
-            
+
             expect(getCustomVacancy).toHaveBeenCalledWith(
                 converter,
                 new RequestParam('text', 'js')
@@ -191,7 +186,7 @@ describe('class HeadHunterApi', () => {
         it('join keywords with "OR" separator for "text" parameter', () => {
             const getCustomVacancy = spyOn(api, 'getCustomVacancy').and.callFake( () => Promise.resolve(fakeStat) );
             api.getVacancy(converter, ['js', 'javascript', 'es6'], null, null);
-            
+
             expect(getCustomVacancy).toHaveBeenCalledWith(
                 converter,
                 new RequestParam('text', 'js OR javascript OR es6')
@@ -201,7 +196,7 @@ describe('class HeadHunterApi', () => {
         it('takes only unique keywords for "text" parameter', () => {
             const getCustomVacancy = spyOn(api, 'getCustomVacancy').and.callFake( () => Promise.resolve(fakeStat) );
             api.getVacancy(converter, ['js', 'javascript', 'js'], null, null);
-            
+
             expect(getCustomVacancy).toHaveBeenCalledWith(
                 converter,
                 new RequestParam('text', 'js OR javascript')
@@ -211,7 +206,7 @@ describe('class HeadHunterApi', () => {
         it('skip empty keywords for "text" parameter', () => {
             const getCustomVacancy = spyOn(api, 'getCustomVacancy').and.callFake( () => Promise.resolve(fakeStat) );
             api.getVacancy(converter, ['js', '', 'javascript', null], null, null);
-            
+
             expect(getCustomVacancy).toHaveBeenCalledWith(
                 converter,
                 new RequestParam('text', 'js OR javascript')
@@ -222,16 +217,16 @@ describe('class HeadHunterApi', () => {
             const getCustomVacancy = spyOn(api, 'getCustomVacancy').and.callFake( () => Promise.resolve(fakeStat) );
             const additionalParam = new RequestParam('add', 'yes');
             api.getVacancy(converter, ['js', 'javascript'], null, null, additionalParam);
-            
+
             expect(getCustomVacancy).toHaveBeenCalledWith(
                 converter,
                 new RequestParam('text', 'js OR javascript'),
                 additionalParam
             );
-        });        
+        });
     });
 
-    describe('the "getAreas" method', () => {        
+    describe('the "getAreas" method', () => {
 
         beforeEach(() => {
             run = spyOn(ApiRequest.prototype, 'run').and.callFake(() => Promise.resolve(sampleAreasJson));
@@ -265,11 +260,11 @@ describe('class HeadHunterApi', () => {
                     expect(areas1).toEqual(sampleAreasJson);
                     expect(areas2).toEqual(sampleAreasJson);
                 });
-        });     
+        });
     });
 
     describe('the "getExperincies" method', () => {
-        
+
         beforeEach(() => {
             run = spyOn(ApiRequest.prototype, 'run').and.callFake(() => Promise.resolve(sampleDictionaryJson));
         });
@@ -317,12 +312,12 @@ describe('class HeadHunterApi', () => {
                     expect(cur1).toEqual(sampleDictionaryJson.currency);
                     expect(exp2).toEqual(sampleDictionaryJson.experience);
                 });
-        });        
+        });
 
     });
 
     describe('the "getCurrencies" method', () => {
-        
+
         beforeEach(() => {
             run = spyOn(ApiRequest.prototype, 'run').and.callFake(() => Promise.resolve(sampleDictionaryJson));
         });
@@ -372,5 +367,5 @@ describe('class HeadHunterApi', () => {
                 });
         });
 
-    });        
+    });
 });
